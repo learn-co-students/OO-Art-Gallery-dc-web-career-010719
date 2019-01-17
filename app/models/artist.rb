@@ -28,26 +28,19 @@ class Artist
     Painting.all.select { |p| p.artist == self }
   end
 
-  def self.have_paintings
-    #returns array of artists who have any paintings
-    self.all.select { |a| !a.paintings.empty?}
-  end
-
-  def years_per_painting
-    #returns # of years per painting for given artist
-    if !self.paintings.empty?
-      self.years_experience.to_f/self.paintings.size
-    end
+  def prolificity
+    #returns paintings per year for given artist
+    self.paintings.size/self.years_experience.to_f
   end
 
   def self.most_prolific
-    #finds highest paintings-to-years ratio among artists
-    mp = self.have_paintings.map do |a|
-      a.years_per_painting
-    end.min
+    #finds fastest painting rate among artists
+    fpr = self.all.map do |a|
+      a.prolificity
+    end.max
     #selects artist(s) with this ratio
-    mpas = self.have_paintings.select do |a|
-      a.years_per_painting == mp
+    mpas = self.all.select do |a|
+      a.prolificity == fpr
     end
     #returns artist or [artists]
     if mpas.size == 1
